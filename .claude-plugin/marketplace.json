@@ -1,0 +1,5 @@
+{
+  "name": "borahae",
+  "owner": { "name": "Borahae contributors" },
+  "plugins": [{ "name": "borahae", "source": "./claude-code/borahae" }]
+}

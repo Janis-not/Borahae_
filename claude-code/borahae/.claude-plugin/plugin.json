@@ -1,0 +1,8 @@
+{
+  "name": "borahae",
+  "version": "0.1.0",
+  "description": "Un equipo de 7 chibis pixel art como agentes de Claude Code (roles intercambiables, delegación y memoria compartida), con un panel morado: escenario donde bailan los que trabajan y camerino pixel art donde descansan los demás, y tus tokens para herdr.",
+  "license": "MIT",
+  "keywords": ["agents", "pane", "pixel-art", "herdr", "purple"],
+  "types": "./types/index.d.ts"
+}
