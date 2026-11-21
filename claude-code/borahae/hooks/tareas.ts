@@ -44,8 +44,10 @@ export const parseTareas = (answer: string): { hechas: string[]; pendientes: str
       if (/^[-*•]/.test(line)) continue
       break // the block ended
     }
-    const text = m[2].trim()
-    if (/^(⏳|🕐|⬜)$/u.test(m[1])) pendientes.push(text)
+    const mark = m[1] ?? ''
+    const text = (m[2] ?? '').trim()
+    if (text === '') continue
+    if (/^(⏳|🕐|⬜)$/u.test(mark)) pendientes.push(text)
     else hechas.push(text)
   }
   return { hechas, pendientes }
@@ -128,7 +130,7 @@ export function readTareas($: EngineInterface) {
 }
 
 const lastOf = (log: readonly Tarea[], key: string) => {
-  for (let i = log.length - 1; i >= 0; i--) if (log[i].key === key) return i
+  for (let i = log.length - 1; i >= 0; i--) if (log[i]?.key === key) return i
   return -1
 }
 

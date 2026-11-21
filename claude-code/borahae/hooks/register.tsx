@@ -277,12 +277,12 @@ export const register: Register = on => {
   })
 
   on('command.run', { command: 'borahae' }, async $ => {
-    await reconcile($, false)
-    await openPane($)
+    await reconcile($, false).catch(() => undefined)
+    await openPane($).catch(() => undefined)
     currentRoles = await read($, roles).catch(() => currentRoles)
     const list = CREW.map(m => `${m.emoji} ${nameOf(m)} (borahae:${m.id}): ${labelOf(m)}`).join('\n')
     return { text: `💜 Equipo Borahae listo:\n${list}` }
-  })
+  }).catch(() => ({ text: '💜 No pude abrir el panel de Borahae. Vuelve a probar con /borahae.' }))
 
   on('command.run', { command: 'borahae-rol' }, async ($, e) => {
     const [who = '', what = ''] = e.args.trim().toLowerCase().split(/\s+/)
@@ -299,27 +299,27 @@ export const register: Register = on => {
     if (m && what === 'pm') {
       currentPm = m.id
       await $.store.set('pm', m.id).catch(() => undefined)
-      await registerAgents($)
+      await registerAgents($).catch(() => undefined)
       return { text: `💜 ${m.emoji} ${m.name} ahora es el PM del equipo (y sigue como ${ROLE_SPECS[roleOf(m.id)].label}).` }
     }
     if (!m || !isRole(what)) return { text: `💜 ${usage}` }
     const nextRoles: Roles = { ...currentRoles, [m.id]: what }
     await update($, roles, () => nextRoles).catch(() => undefined)
     await $.store.set('roles', nextRoles).catch(() => undefined)
-    await registerAgents($)
+    await registerAgents($).catch(() => undefined)
     return { text: `💜 ${m.emoji} ${m.name} ahora es ${labelOf(m)}.` }
-  })
+  }).catch(() => ({ text: '💜 No pude cambiar el rol. Vuelve a probar con /borahae-rol.' }))
 
   on('command.run', { command: 'borahae-tareas' }, async ($, e) => {
     const who = e.args.trim().toLowerCase()
     const m = MEMBERS.find(x => x.id === who)
     if (who !== '' && !m) return { text: `💜 Uso: /borahae-tareas [miembro]
 Miembros: ${MEMBERS.map(x => x.id).join(', ')}` }
-    const log = await readTareas($)
+    const log = await readTareas($).catch(() => [])
     return { text: `📋 Tareas del equipo Borahae${m ? ` · ${m.emoji} ${nameOf(m)}` : ''}
 
 ${renderTareas(log, m?.id)}` }
-  })
+  }).catch(() => ({ text: '💜 No pude leer el registro de tareas. Vuelve a probar con /borahae-tareas.' }))
 
   // ── Team rules in the system prompt: delegation and memory ──────────
   on('prompt.compose', async ($, e, next) => {
@@ -334,12 +334,12 @@ ${renderTareas(log, m?.id)}` }
     if (!m) return next(e)
     const pending = `${PENDING}${e.tool_use_id}:${seq++}`
     const base: CrewStatus = { member: m.id, state: 'working', task: e.description }
-    await write($, prev => ({ ...prev, [pending]: base }))
+    await write($, prev => ({ ...prev, [pending]: base })).catch(() => undefined)
     let result
     try {
       result = await next(e)
     } catch (err) {
-      await write($, prev => ({ ...without(prev, pending), [pending]: { ...base, state: 'error' } }))
+      await write($, prev => ({ ...without(prev, pending), [pending]: { ...base, state: 'error' } })).catch(() => undefined)
       throw err
     }
     if (result.deny !== undefined) {
@@ -347,10 +347,10 @@ ${renderTareas(log, m?.id)}` }
       const key = pending
       await startTarea($, key, m.id, e.description).catch(() => undefined)
       await endTarea($, key, false, '', `denegado: ${reason}`).catch(() => undefined)
-      await write($, prev => ({ ...without(prev, pending), [pending]: { ...base, state: 'error', reason } }))
+      await write($, prev => ({ ...without(prev, pending), [pending]: { ...base, state: 'error', reason } })).catch(() => undefined)
     } else if (result.agentId === undefined) {
       // Nothing local to follow (a remote workflow agent): stop showing it.
-      await write($, prev => without(prev, pending))
+      await write($, prev => without(prev, pending)).catch(() => undefined)
     } else {
       const id = result.agentId
       await startTarea($, id, m.id, e.description, Boolean(e.resume)).catch(() => undefined)
@@ -359,10 +359,10 @@ ${renderTareas(log, m?.id)}` }
       await write($, prev => {
         const rest = without(prev, pending)
         return rest[id] && !e.resume ? rest : { ...rest, [id]: base }
-      })
+      }).catch(() => undefined)
     }
     return result
-  })
+  }).catch(($, e, next) => next(e)) // fail open: Borahae's bookkeeping never blocks a spawn
 
   on('turn.complete', async ($, e, next) => {
     const id = e.agentId
