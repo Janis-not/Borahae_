@@ -6,6 +6,14 @@ Borahae nació del cariño por el color morado y por los pequeños equipos que s
 
 ![Borahae](preview.png)
 
+### Así se ve cuando el equipo trabaja
+
+Quien está trabajando sube al escenario a bailar, con su tiempo y su tarea debajo; los demás descansan en el camerino.
+
+![Joonie en el escenario mientras prepara un informe](capturas/un-agente-trabajando.png)
+
+![Joonie y Mochi trabajando a la vez en el escenario](capturas/equipo-trabajando.png)
+
 ## Qué incluye
 
 - **Layout de herdr** (`layouts/borahae.json`, `themes/borahae.json`, `backgrounds/borahae-hearts.png`):
