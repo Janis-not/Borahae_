@@ -2,7 +2,7 @@
 
 Un layout morado para [herdr](https://herdr.dev) y un equipo de chibis pixel art para Claude Code.
 
-Mod Borahae está inspirado en la conexión especial que el fandom tenemos con siete voces que cambiaron la música y el universo de millones. I purple you. Disfruta de este pequeño universo hecho por y para el fandom.
+Borahae nació del cariño por el color morado y por los pequeños equipos que se acompañan. Siete amigos pixelados que trabajan contigo, descansan cuando terminas y bailan cuando las cosas salen bien. Ojalá este pequeño universo violeta te haga sentir en casa.
 
 ![Borahae](preview.png)
 

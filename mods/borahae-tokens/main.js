@@ -1,6 +1,6 @@
 // Borahae · Tokens: the plan's usage windows (5 h / weekly), how long until each
 // resets, and the context window, above Spaces in the sidebar.
-// The figures come from a Claude Code mod or status line script, which writes them to
+// The figures come from Claude Code's Borahae plugin, which writes them to
 // ~/.claude/borahae-usage.json after every response and once a minute.
 
 import { View, div, image } from "gpui-kit";
@@ -102,7 +102,7 @@ export default class BorahaeTokens extends View {
     let body;
     if (!d) {
       body = div().text_size(11).text_color(MUTED)
-        .child("Aún sin datos. Aparecen tras la primera respuesta de Claude (ver RECIPE.md).");
+        .child("Aún sin datos. Aparecen tras la primera respuesta de Claude con el plugin Borahae.");
     } else {
       const parts = [];
       for (const r of d.rateLimits || []) parts.push(this.limit(r, w, now));
